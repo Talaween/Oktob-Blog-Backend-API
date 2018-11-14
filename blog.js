@@ -1,7 +1,6 @@
 var db = require('./database');
-var auth = require('./authentication');
 
-exports.add = function(conData, req, callback){
+exports.add = function(conData, data, callback){
 	
 	//first connect to DB
 	db.connect(conData, function(err, data){
@@ -17,16 +16,16 @@ exports.add = function(conData, req, callback){
 		//if no error prepare our blog object with the values sent by the client
 		today = new Date().toISOString().slice(0, 19).replace('T', ' ');
 		var blog = {
-		  title: req.body['title'],
-		  authorId: req.body['authorId'],
-		  body: req.body['body'],
-		  createdDate: req.body['date'] || today,
-		  photo: req.body['photo'] 
+			title: data.title,
+			authorId: data.authorId,
+			body:data.body,
+			createdDate: data.createdDate || today,
+			photo: data.photo
 		};
 		//perform the query
 		data.query('INSERT INTO blogs SET ?', blog, function (err, result) {
 			//return control to the calling module
-			callback(err, blog);
+			callback(err, result);
 		});
 	});
 };
@@ -46,10 +45,8 @@ exports.getAll = function(conData, req, callback){
 		//perform the query
 		data.query('SELECT * FROM blogs', function (err, result) {
 			//return control to the calling module
-			
-			let data = JSON.stringify(result);
-			
-			callback(err, data);
+						
+			callback(err, result);
 		});	
 			
 	});
@@ -69,10 +66,8 @@ exports.getById = function(conData, id, callback){
 		//perform the query
 		data.query('SELECT * FROM blogs WHERE id = ' + id , function (err, result) {
 			//return control to the calling module
-			
-			let data = JSON.stringify(result);
-			
-			callback(err, data);
+					
+			callback(err, result);
 		});
 	});
 };
@@ -89,29 +84,11 @@ exports.deleteById = function(conData, req, callback){
 			return;
 		}	
 
-		auth.loginUser(conData, req, function(err, result){
-			
-			if (err) {
-				callback(err);
-				return;
-			}
-			
-			if(result.login === "success"){
-				
-				//perform the query
-				data.query('DELETE FROM blogs WHERE id = ' + id , function (err, result) {
-					//return control to the calling module
-					
-					let data = JSON.stringify(result);
-					
-					callback(err, data);
-				});
-			}
-			else{
-				let err = {message:"username or password is incorrect"};
-				callback(err);
-			}
-			
+		//perform the query
+		data.query('DELETE FROM blogs WHERE id = ' + id , function (err, result) {
+			//return control to the calling module
+						
+			callback(err, result);
 		});
 	});
 };
@@ -127,35 +104,20 @@ exports.updateById = function(conData, req, callback){
 			return;
 		}
 
-		auth.loginUser(conData, req, function(err, result){
+		//if no error prepare our blog object with the values sent by the client
+		var blog = {
+			title: data.title,
+			authorId: data.authorId,
+			body:data.body,
+			createdDate: data.createdDate || today,
+			photo: data.photo
+		};
+		//perform the query
+		data.query('UPDATE blogs SET ? WHERE id = ' + req.params.id, blog, function (err, result) {
 			
-			if (err) {
-				callback(err);
-				return;
-			}
-			
-			if(result.login === "success"){
-				
-				//if no error prepare our blog object with the values sent by the client
-				var blog = {
-					title: req.body['title'],
-					authorId: req.body['authorId'],
-					body: req.body['body'],
-					date: req.body['date'],
-					photo: req.body['photo'] 
-				};
-				//perform the query
-				data.query('UPDATE blogs SET ? WHERE id = ' + req.params.id, blog, function (err, result) {
-					//return control to the calling module
-					callback(err, blog);
-				});
-			}
-			else{
-				let err = {message:"username or password is incorrect"};
-				callback(err);
-			}
-			
-		});		
+			//return control to the calling module
+			callback(err, result);
+		});
 	
 		
 	});

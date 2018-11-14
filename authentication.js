@@ -43,9 +43,9 @@ exports.loginUser = (conData, request, callback) => {
 			
 			//return control to the calling module
 			if(result && result.length > 0)
-				callback(null, {login:"success"});
+				callback(null, {login:true});
 			else
-				callback(null, {login:"fail"});
+				callback(null, {login:false});
 		});
 	});
 }
