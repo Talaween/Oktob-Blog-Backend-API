@@ -360,9 +360,10 @@ exports.allRoutes = function (databaseData, server) {
 
         //TODO make this admin only task
         dump.addUsers(databaseData);
+        dump.addBlogs(databaseData);
 
         res.status(200);
-        res.end("users were created successfully");
+        res.end("dump data were added successfully");
         
     });
 };

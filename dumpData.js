@@ -1,7 +1,8 @@
 
-const user = require("./models/user");
-const blog = require("./models/blog");
+const user = require('./models/user');
+const blog = require('./models/blog');
 
+const randomstring = require('randomstring');
 let usersData = [
         {
             username: 'mahmoud@yahoo.com',
@@ -11,21 +12,21 @@ let usersData = [
             registrationDate: new Date()
         },
         {
-            username: 'Rooney@yahoo.com',
+            username: 'David@yahoo.com',
             password: '123456',
-            firstName: 'Rooney',
-            lastName: 'England',
+            firstName: 'David',
+            lastName: 'Beckham',
             registrationDate: new Date()
         },
         {
-            username: 'Inesta@yahoo.com',
+            username: 'Messi@yahoo.com',
             password: '123456',
-            firstName: 'Inesta',
-            lastName: 'Awad',
+            firstName: 'Leonil',
+            lastName: 'Messi',
             registrationDate: new Date()
         },
         {
-            username: 'again@yahoo.com',
+            username: 'richard@yahoo.com',
             password: '123456',
             firstName: 'Richard',
             lastName: 'Lane',
@@ -49,20 +50,10 @@ let usersData = [
             username: 'mike@yahoo.com',
             password: '123456',
             firstName: 'Mike',
-            lastName: 'Oli',
+            lastName: 'Richard',
             registrationDate: new Date()
         }
-    ]
-
-let blogData = [
-    {
-        title: 'lorem ipson',
-        authorId: 1,
-        body: "lorem ipson some text",
-        createdDate: new Date(),
-        photo: "./photo.jpeg" 
-    }
-]
+    ];
 let addUser = function(conData, userData){
     
     user.add(conData, userData, function (err, data){
@@ -71,7 +62,6 @@ let addUser = function(conData, userData){
             console.log("the following error occured:" + err);
             return;
         }
-        console.log("user added sucessfully");
     });
 }
 
@@ -81,5 +71,62 @@ exports.addUsers = function(conData){
 
         addUser(conData, element);
     });
-
 }
+
+//----------------Add Random Blogs ----------------
+
+let blogData = [];
+
+let addBlog = function(conData, blogData){
+    
+    blog.add(conData, blogData, function (err, data){
+    
+        if(err){
+            console.log("the following error occured:" + err);
+            return;
+        }
+    });
+};
+
+exports.addBlogs = function(conData){
+
+    for( let i = 0; i < 24; i++){
+
+        let imgNum = (i % 8) + 1;
+        let tempBlog = {
+            title: randomParagraph(4, 8),
+            authorId: Math.random() * (8 - 1) + 1,
+            body: randomParagraph(100, 300),
+            createdDate: new Date(),
+            photo: 'http://localhost:8080/img/img' + imgNum + '.jpeg'
+        };
+
+        blogData.push(tempBlog);
+    }
+    
+    blogData.forEach(async element => {
+
+        addBlog(conData, element);
+    });
+};
+
+randomParagraph = function (min, max){
+
+    let paragraph = "";
+    //generate a random pagraph length between min and max words
+    let paragraphLength =  Math.random() * (max - min) + min
+    for(let i = 0; i < paragraphLength; i++){
+
+        paragraph += randomWord(3, 7) + " ";
+
+    }
+
+    return paragraph;
+};
+
+randomWord = function(min, max){
+
+    let wordLength = Math.random() * (max - min) + min;
+
+    return randomstring.generate(wordLength);
+};

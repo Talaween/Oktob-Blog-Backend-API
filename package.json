@@ -8,10 +8,11 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "cors": "^2.8.5",
     "body-parser": "^1.18.3",
-    "mysql": "^2.16.0"
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mysql": "^2.16.0",
+    "randomstring": "^1.1.5"
   },
   "keywords": [
     "Oktob",

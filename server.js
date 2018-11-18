@@ -18,6 +18,8 @@ server.use(cors());
 //enable cors for more complex routes
 server.options('*', cors());
 
+server.use(express.static('public'));
+
 //prepare our database connection parameters
 const databaseData = { 
 	host:"localhost",

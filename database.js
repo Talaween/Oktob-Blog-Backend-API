@@ -35,11 +35,11 @@ exports.createTables = function (conData, callback){
 		  database: conData.database
 		});
 		
-	let sql = "CREATE TABLE Users (ID INT NOT NULL AUTO_INCREMENT, username VARCHAR(32), password VARCHAR(16), firstName VARCHAR(16), lastName VARCHAR(16), registrationDate DATETIME, PRIMARY KEY (ID))";
+	let sql = "CREATE TABLE Users (id INT NOT NULL AUTO_INCREMENT, username VARCHAR(32), password VARCHAR(16), firstName VARCHAR(16), lastName VARCHAR(16), registrationDate DATETIME, PRIMARY KEY (ID))";
 	
-	sql += ";" + "CREATE TABLE Blogs (ID INT NOT NULL AUTO_INCREMENT, title VARCHAR(2048), authorId INT , body LONGTEXT, createdDate DATETIME, photo VARCHAR(2048), PRIMARY KEY (ID) )";
+	sql += ";" + "CREATE TABLE Blogs (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(2048), authorId INT , body LONGTEXT, createdDate DATETIME, photo VARCHAR(2048), PRIMARY KEY (ID) )";
 	
-	sql += ";" + "CREATE TABLE Favourites (ID INT NOT NULL AUTO_INCREMENT, userId INT, blogId INT, PRIMARY KEY (ID) )";
+	sql += ";" + "CREATE TABLE Favourites (id INT NOT NULL AUTO_INCREMENT, userId INT, blogId INT, PRIMARY KEY (ID) )";
 	
 	con.query(sql, function (err, result) {
 		//console.log("finish query:" + result);
