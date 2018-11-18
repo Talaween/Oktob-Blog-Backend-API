@@ -1,12 +1,12 @@
-var db = require('./database');
+var db = require('../database');
 
 //this function is responsible for adding a new user
-exports.add = function(conData, data, callback){
+exports.add = function(conData, userData, callback){
 	
 	//TODO: server validation
 
 	//if pass validation connect to DB
-	db.connect(conData, function(err, data){
+	db.connect(conData, function(err, conn){
 		
 		//when done check for any error
 		if (err) {
@@ -15,26 +15,21 @@ exports.add = function(conData, data, callback){
 			return;
 		}	
 		
-		//if no error prepare our user object with the values sent by the client
-		var user = {
-			username: data.username,
-			password: data.password,
-			firstName: data.firstName,
-			lastName: data.lastName,
-			registrationDate: data.registrationDate
-		};
+		//TODO server validation
+
+
 		//perform the query
-		data.query('INSERT INTO users SET ?', user, function (err, result) {
+		conn.query('INSERT INTO users SET ?', userData, function (err, result) {
 			//return control to the calling module
 			callback(err, result);
 		});
 	});
 };
 
-exports.getAll = function(conData, data, callback){
+exports.getAll = function(conData, userData, callback){
 	
 	//first connect to DB
-	db.connect(conData, function(err, data){
+	db.connect(conData, function(err, conn){
 		
 		//when done check for any error
 		if (err) {
@@ -43,7 +38,7 @@ exports.getAll = function(conData, data, callback){
 		}	
 		
 		//perform the query
-		data.query('SELECT * FROM users', function (err, result) {
+		conn.query('SELECT * FROM users', function (err, result) {
 			//return control to the calling module
 						
 			callback(err, result);
@@ -52,10 +47,10 @@ exports.getAll = function(conData, data, callback){
 	});
 };
 
-exports.getById = function(conData, data, callback){
+exports.getById = function(conData, userData, callback){
 	
 	//first connect to DB
-	db.connect(conData, function(err, data){
+	db.connect(conData, function(err, conn){
 		
 		//when done check for any error
 		if (err) {
@@ -64,7 +59,7 @@ exports.getById = function(conData, data, callback){
 		}	
 
 		//perform the query
-		data.query('SELECT * FROM users WHERE id = ' + data.id , function (err, result) {
+		conn.query('SELECT * FROM users WHERE id = ' + userData.id , function (err, result) {
 			//return control to the calling module
 						
 			callback(err, result);
@@ -73,10 +68,10 @@ exports.getById = function(conData, data, callback){
 	});
 };
 
-exports.deleteById = function(conData, data, callback){
+exports.deleteById = function(conData, userData, callback){
 	
 	//first connect to DB
-	db.connect(conData, function(err, data){
+	db.connect(conData, function(err, conn){
 		
 		//when done check for any error
 		if (err) {
@@ -85,7 +80,7 @@ exports.deleteById = function(conData, data, callback){
 		}	
 
 		//perform the query
-		data.query('DELETE FROM users WHERE id = ' + data.id , function (err, result) {
+		conn.query('DELETE FROM users WHERE id = ' + userData.id , function (err, result) {
 			
 			//return control to the calling module
 			callback(err, result);
@@ -94,7 +89,7 @@ exports.deleteById = function(conData, data, callback){
 	});
 };
 
-exports.updateById = function(conData, data, callback){
+exports.updateById = function(conData, userData, callback){
 	
 	//first connect to DB
 	db.connect(conData, function(err, data){
@@ -106,15 +101,15 @@ exports.updateById = function(conData, data, callback){
 		}	
 		
 		//if no error prepare our user object with the values sent by the client
-		var user = {
-			username: data.username,
-			password: data.password,
-			firstName: data.firstName,
-			lastName: data.lastName,
-			registrationDate: data.registrationDate
+		let user = {
+			username: userData.username,
+			password: userData.password,
+			firstName: userData.firstName,
+			lastName: userData.lastName,
+			registrationDate: userData.registrationDate
 		};
 		//perform the query
-		data.query('UPDATE users SET ? WHERE id = ' + data.id, user, function (err, result) {
+		data.query('UPDATE users SET ? WHERE id = ' + userData.id, user, function (err, result) {
 			//return control to the calling module
 			callback(err, result);
 		});

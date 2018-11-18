@@ -1,17 +1,18 @@
 //import user module
-var user = require('./user');
+const user = require('./models/user');
 //import our product module which handles all CRUD operations on products
-var blog = require('./blog');
+const blog = require('./models/blog');
 //import our database module which handles most of general db operations
-var db = require('./database');
+const db = require('./database');
+//import our module which adds dumpData
+const dump = require('./dumpData');
 
 exports.allRoutes = function (databaseData, server) {
 
-    //route any requests to http://localhost:8080/users to this function
-    server.post('/users', (req, res) => {
+    server.post('/api/v1.0/users', (req, res) => {
     
         //ectract data from request
-        let data = {
+        let userData = {
             username: req.body['username'],
             password: req.body['password'],
             firstName: req.body['firstName'],
@@ -19,7 +20,7 @@ exports.allRoutes = function (databaseData, server) {
             registrationDate : req.body['registrationDate']
         }
         //we are atempting to add a user
-        user.add(databaseData, data, function (err, data){
+        user.add(databaseData, userData, function (err, data){
             
             res.setHeader('content-type', 'application/json')
             res.setHeader('accepts', 'GET, POST')
@@ -36,18 +37,19 @@ exports.allRoutes = function (databaseData, server) {
         });
     })
 
-    server.get('/users', (req, res) => {
+    server.get('/api/v1.0/users', (req, res) => {
         
         //TODO: extract pagination & search parameters
 
-        let data = {
+        let userData = {
             
         };
 
-        user.getAll(databaseData, data, function (err, data){
+        user.getAll(databaseData, userData, function (err, result){
         
             res.setHeader('content-type', 'application/json')
             res.setHeader('accepts', 'GET')
+
             if(err){
                 res.status(400);
                 res.end("error:" + err);
@@ -55,18 +57,18 @@ exports.allRoutes = function (databaseData, server) {
             }
             
             res.status(200);
-            res.end(data);
+            res.end(JSON.stringify(result));
         });
     })
 
-    server.get('/users/:id', (req, res) => {
+    server.get('/api/v1.0/users/:id', (req, res) => {
 
-        let data = {
+        let userData = {
             id : req.params.id
         }
         //we are atempting to retrieve one user
         //note that we get the user id through the req.params.id, id matches the path parameter name 
-        user.getById(databaseData, data, function (err, data){
+        user.getById(databaseData, userData, function (err, result){
             
             res.setHeader('content-type', 'application/json')
             res.setHeader('accepts', 'GET')
@@ -77,17 +79,17 @@ exports.allRoutes = function (databaseData, server) {
                 return;
             }
             res.status(200);
-            res.end(data);
+            res.end(JSON.stringify(result));
         });
     })
 
-    server.delete('/users/:id',(req, res) => {
+    server.delete('/api/v1.0/users/:id',(req, res) => {
         
-        let data = {
+        let userData = {
             id : req.params.id
         }
 
-        user.deleteById(databaseData, data, function (err, data){
+        user.deleteById(databaseData, userData, function (err, result){
             
             if(err){
                 res.status(400);
@@ -95,25 +97,25 @@ exports.allRoutes = function (databaseData, server) {
                 return;
             }
             res.status(201);
-            res.end(data);
+            res.end(JSON.stringify(result));
         });
 
     });
 
-    let data = {
-        id : req.params.id,
-        username: req.body['username'],
-        password: req.body['password'],
-        firstName: req.body['firstName'],
-        lastName: req.body['lastName'],
-        registrationDate : req.body['registrationDate']
-    }
-    server.put('/users/:id', (req, res) => {
+   
+    server.put('/api/v1.0/users/:id', (req, res) => {
         
+        let userData = {
+            id : req.params.id,
+            username: req.body['username'],
+            password: req.body['password'],
+            firstName: req.body['firstName'],
+            lastName: req.body['lastName'],
+            registrationDate : req.body['registrationDate']
+        }
         //we are atempting to update a user
-        user.updateById(databaseData, data, function (err, data){
+        user.updateById(databaseData, userData, function (err, result){
             
-
             if(err){
                 res.status(400);
                 res.end("error:" + err);
@@ -121,24 +123,22 @@ exports.allRoutes = function (databaseData, server) {
             }
             
             res.status(200);
-            res.end("success");
+            res.end(JSON.stringify(result));
         });
     })
 
     //------------blogs Routes-----------------
-
-    //route any requests to http://localhost:8080/sellers to this function
-    server.post('/blogs', (req, res) => {
+    server.post('/api/v1.0/blogs', (req, res) => {
         
         let blogData = {
 			title: req.body['title'],
 			authorId: req.body['authorId'],
 			body: req.body['body'],
-			date: req.body['date'],
+			createdDate: new Date(),
 			photo: req.body['photo'] 
         };
         
-        blog.add(databaseData, blogData, function (err, data){
+        blog.add(databaseData, blogData, function (err, result){
             
             if(err){
                 res.status(400);
@@ -147,17 +147,17 @@ exports.allRoutes = function (databaseData, server) {
             }
             
             res.status(201);
-            res.end("success");
+            res.end(JSON.stringify(result));
         });
     })
 
-    server.get('/blogs', (req, res) => {
+    server.get('/api/v1.0/blogs', (req, res) => {
         
         //TODO: extract pagination and search parameters
         let blogData = {
 
         }
-        blog.getAll(databaseData, blogData, function (err, data){
+        blog.getAll(databaseData, blogData, function (err, result){
         
             res.setHeader('content-type', 'application/json')
             res.setHeader('accepts', 'GET')
@@ -168,17 +168,17 @@ exports.allRoutes = function (databaseData, server) {
                 return;
             }
             res.status(200);
-            res.end(data);
+            res.end(JSON.stringify(result));
         });
     })
 
-    server.get('/blogs/:id', (req, res) => {
+    server.get('/api/v1.0/blogs/:id', (req, res) => {
 
         let blogData = {
             id : req.params.id
         }
 
-        blog.getById(databaseData, blogData, function (err, data){
+        blog.getById(databaseData, blogData, function (err, result){
             
             res.setHeader('content-type', 'application/json')
             res.setHeader('accepts', 'GET')
@@ -189,17 +189,17 @@ exports.allRoutes = function (databaseData, server) {
                 return;
             }
             res.status(200);
-            res.end(data);
+            res.end(JSON.stringify(result));
         });
     })
 
-    server.delete('/blogs/:id',(req, res) => {
+    server.delete('/api/v1.0/blogs/:id',(req, res) => {
         
         let blogData = {
             id : req.params.id
         }
 
-        blog.deleteById(databaseData, blogData, function (err, data){
+        blog.deleteById(databaseData, blogData, function (err, result){
             
             if(err){
                 res.status(400);
@@ -207,23 +207,23 @@ exports.allRoutes = function (databaseData, server) {
                 return;
             }
             res.status(200);
-            res.end(data);
+            res.end(JSON.stringify(result));
         });
 
     });
 
-    server.put('/blogs/:id', (req, res) => {
+    server.put('/api/v1.0/blogs/:id', (req, res) => {
         
         let blogData = {
             id : req.params.id,
             title: req.body['title'],
 			authorId: req.body['authorId'],
 			body: req.body['body'],
-			date: req.body['date'],
+			createdDate: new Date(),
 			photo: req.body['photo'] 
         }
 
-        blog.updateById(databaseData, blogData, function (err, data){
+        blog.updateById(databaseData, blogData, function (err, result){
             
             if(err){
                 res.status(400);
@@ -232,15 +232,119 @@ exports.allRoutes = function (databaseData, server) {
             }
             
             res.status(200);
-            res.end("success");
+            res.end(JSON.stringify(result));
+        });
+    });
+
+
+    //------------Favourites Routes-----------------
+    server.post('/api/v1.0/favourites', (req, res) => {
+        
+        let favData = {
+			userId: req.body['userId'],
+			blogId: req.body['blogId']
+        };
+        
+        favourites.add(databaseData, favData, function (err, result){
+            
+            if(err){
+                res.status(400);
+                res.end("error:" + err);
+                return;
+            }
+            
+            res.status(201);
+            res.end(JSON.stringify(result));
+        });
+    })
+
+    server.get('/api/v1.0/favourites', (req, res) => {
+        
+        //TODO: extract pagination and search parameters
+        let favData = {
+            userId : req.query.userId
+        }
+        favourites.getAll(databaseData, favData, function (err, result){
+        
+            res.setHeader('content-type', 'application/json')
+            res.setHeader('accepts', 'GET')
+            
+            if(err){
+                res.status(400);
+                res.end("error:" + err);
+                return;
+            }
+            res.status(200);
+            res.end(JSON.stringify(result));
+        });
+    })
+
+    server.get('/api/v1.0/favourites/:id', (req, res) => {
+
+        let favData = {
+            id : req.params.id
+        }
+
+        favourites.getById(databaseData, favData, function (err, result){
+            
+            res.setHeader('content-type', 'application/json')
+            res.setHeader('accepts', 'GET')
+            
+            if(err){
+                res.status(400);
+                res.end("error:" + err);
+                return;
+            }
+            res.status(200);
+            res.end(JSON.stringify(result));
+        });
+    })
+
+    server.delete('/api/v1.0/favourites/:id',(req, res) => {
+        
+        let favData = {
+            id : req.params.id
+        }
+
+        favourites.deleteById(databaseData, favData, function (err, result){
+            
+            if(err){
+                res.status(400);
+                res.end("error:" + err);
+                return;
+            }
+            res.status(200);
+            res.end(JSON.stringify(result));
+        });
+
+    });
+
+    server.put('/api/v1.0/favourites/:id', (req, res) => {
+        
+        let favData = {
+            id : req.params.id,
+            userId: req.body['userId'],
+			blogId: req.body['blogId']
+        }
+
+        favourites.updateById(databaseData, favData, function (err, result){
+            
+            if(err){
+                res.status(400);
+                res.end("error:" + err);
+                return;
+            }
+            
+            res.status(200);
+            res.end(JSON.stringify(result));
         });
     })
 
     //this route will allow to create tables in the database
     //it should be a confidential method and can be performed only by an admin
-    server.post('/createTables', (req, res) => {
+    server.post('/api/v1.0/admin/createTables', (req, res) => {
         
-        db.createTables(databaseData, function(err, state){
+        db.createTables(databaseData, function(err, result){
             if(err) {
                 res.status(400);
                 res.end("an error has occured:" + err);
@@ -249,5 +353,16 @@ exports.allRoutes = function (databaseData, server) {
             res.status(200);
             res.end("tables were created successfully");
         });
-    })
+    });
+
+
+    server.post('/api/v1.0/admin/addDumpData', (req, res) => {
+
+        //TODO make this admin only task
+        dump.addUsers(databaseData);
+
+        res.status(200);
+        res.end("users were created successfully");
+        
+    });
 };

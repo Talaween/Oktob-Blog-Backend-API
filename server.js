@@ -1,12 +1,11 @@
 //import express module
-var express = require('express');
+const express = require('express');
 //import cors to enable cors
 const cors = require('cors');
 //import body parser
 const bodyParser = require('body-parser');
 
 routes = require('./routes');
-dump = require('./dumpData');
 
 //create the express module
 const server = express()
@@ -40,6 +39,5 @@ server.listen(port, err => {
 	} else {
 		console.log(`App is ready on port ${port}`);
 
-		dump.addUsers(databaseData);
 	}
 })

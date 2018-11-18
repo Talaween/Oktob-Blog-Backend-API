@@ -1,6 +1,6 @@
 'use strict'
 
-var db = require('./database');
+const db = require('./database');
 
 exports.loginUser = (conData, request, callback) => {
 	

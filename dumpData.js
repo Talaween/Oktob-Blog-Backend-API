@@ -1,59 +1,69 @@
 
-var user = require("./user");
-var blog = require("./blog");
+const user = require("./models/user");
+const blog = require("./models/blog");
 
-var usersData = [
+let usersData = [
         {
             username: 'mahmoud@yahoo.com',
             password: '123456',
             firstName: 'Mahmoud',
             lastName: 'Awad',
-            registrationDate:Date.now()
+            registrationDate: new Date()
         },
         {
             username: 'Rooney@yahoo.com',
             password: '123456',
             firstName: 'Rooney',
             lastName: 'England',
-            registrationDate:Date.now()
+            registrationDate: new Date()
         },
         {
             username: 'Inesta@yahoo.com',
             password: '123456',
             firstName: 'Inesta',
             lastName: 'Awad',
-            registrationDate:Date.now()
+            registrationDate: new Date()
         },
         {
             username: 'again@yahoo.com',
             password: '123456',
             firstName: 'Richard',
             lastName: 'Lane',
-            registrationDate:Date.now()
+            registrationDate: new Date()
         },
         {
             username: 'something@yahoo.com',
             password: '123456',
             firstName: 'something',
             lastName: 'test',
-            registrationDate:Date.now()
+            registrationDate: new Date()
         },
         {
             username: 'test@yahoo.com',
             password: '123456',
             firstName: 'test',
             lastName: 'Awad',
-            registrationDate:Date.now()
+            registrationDate: new Date()
         },
         {
             username: 'mike@yahoo.com',
             password: '123456',
             firstName: 'Mike',
             lastName: 'Oli',
-            registrationDate:Date.now()
+            registrationDate: new Date()
         }
     ]
-var addUser = function(conData, userData){
+
+let blogData = [
+    {
+        title: 'lorem ipson',
+        authorId: 1,
+        body: "lorem ipson some text",
+        createdDate: new Date(),
+        photo: "./photo.jpeg" 
+    }
+]
+let addUser = function(conData, userData){
     
     user.add(conData, userData, function (err, data){
     
