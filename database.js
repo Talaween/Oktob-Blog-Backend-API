@@ -1,3 +1,4 @@
+'use strict'
 //import mysql driver
 const mysql = require('mysql');
 

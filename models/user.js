@@ -1,3 +1,5 @@
+'use strict'
+
 var db = require('../database');
 
 //this function is responsible for adding a new user

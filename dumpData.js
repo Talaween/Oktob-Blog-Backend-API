@@ -1,8 +1,12 @@
+'use strict'
 
 const user = require('./models/user');
 const blog = require('./models/blog');
 
+//this package we need it to generate some random strings 
 const randomstring = require('randomstring');
+
+//create some users data
 let usersData = [
         {
             username: 'mahmoud@yahoo.com',
@@ -65,6 +69,8 @@ let addUser = function(conData, userData){
     });
 }
 
+//note the use of the keyword async which means this function will be an asynchronous
+//we need this because we are running a for loop of aschyronous operation
 exports.addUsers = function(conData){
 
     usersData.forEach(async element => {
@@ -110,10 +116,11 @@ exports.addBlogs = function(conData){
     });
 };
 
-randomParagraph = function (min, max){
+//generate a random pagraph length between min and max words
+var randomParagraph = function (min, max){
 
     let paragraph = "";
-    //generate a random pagraph length between min and max words
+    
     let paragraphLength =  Math.random() * (max - min) + min
     for(let i = 0; i < paragraphLength; i++){
 
@@ -124,7 +131,8 @@ randomParagraph = function (min, max){
     return paragraph;
 };
 
-randomWord = function(min, max){
+//generate random word of length berween min and max
+var randomWord = function(min, max){
 
     let wordLength = Math.random() * (max - min) + min;
 

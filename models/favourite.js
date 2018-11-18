@@ -1,3 +1,5 @@
+'use strict'
+
 var db = require('../database');
 
 exports.add = function(conData, favData, callback){

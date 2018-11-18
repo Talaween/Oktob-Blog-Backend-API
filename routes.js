@@ -1,3 +1,4 @@
+'use strict'
 //import user module
 const user = require('./models/user');
 //import our product module which handles all CRUD operations on products
@@ -9,6 +10,7 @@ const dump = require('./dumpData');
 
 exports.allRoutes = function (databaseData, server) {
 
+    //------------Users Routes-----------------
     server.post('/api/v1.0/users', (req, res) => {
     
         //ectract data from request
@@ -359,6 +361,8 @@ exports.allRoutes = function (databaseData, server) {
     server.post('/api/v1.0/admin/addDumpData', (req, res) => {
 
         //TODO make this admin only task
+
+        //dump some users and blogs data
         dump.addUsers(databaseData);
         dump.addBlogs(databaseData);
 

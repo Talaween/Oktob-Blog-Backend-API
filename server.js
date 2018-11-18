@@ -1,3 +1,4 @@
+'use strict'
 //import express module
 const express = require('express');
 //import cors to enable cors
@@ -5,7 +6,7 @@ const cors = require('cors');
 //import body parser
 const bodyParser = require('body-parser');
 
-routes = require('./routes');
+const routes = require('./routes');
 
 //create the express module
 const server = express()
@@ -15,9 +16,11 @@ server.use(bodyParser.json())
 
 //enable all origins 
 server.use(cors());
+
 //enable cors for more complex routes
 server.options('*', cors());
 
+//allow static files to serve the images
 server.use(express.static('public'));
 
 //prepare our database connection parameters
@@ -30,8 +33,7 @@ const databaseData = {
 //save server port on global variable
 var port = 8080;
 
-//------------Users Routes-----------------
-
+//----- add all routes to the api end points ------
 routes.allRoutes(databaseData, server);
 
 //start the server 
