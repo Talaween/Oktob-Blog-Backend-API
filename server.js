@@ -28,7 +28,7 @@ const databaseData = {
 	host:"localhost",
 	user:"root",
 	password: "",
-	database: "myBlog"
+	database: "oktob"
 };
 //save server port on global variable
 var port = 8080;

@@ -3,10 +3,14 @@
 const user = require('./models/user');
 //import our product module which handles all CRUD operations on products
 const blog = require('./models/blog');
+//import the login module
+const login = require('./models/login')
 //import our database module which handles most of general db operations
 const db = require('./database');
 //import our module which adds dumpData
 const dump = require('./dumpData');
+//import authentication module
+const auth = require('./authentication');
 
 exports.allRoutes = function (databaseData, server) {
 
@@ -104,7 +108,6 @@ exports.allRoutes = function (databaseData, server) {
 
     });
 
-   
     server.put('/api/v1.0/users/:id', (req, res) => {
         
         let userData = {
@@ -127,8 +130,43 @@ exports.allRoutes = function (databaseData, server) {
             res.status(200);
             res.end(JSON.stringify(result));
         });
-    })
+    });
 
+    //------------Login Routes-----------------
+    server.post('/api/v1.0/login', (req, res) => {
+    
+        auth.loginUser(databaseData, req, (err, result) => {
+
+            if(err){
+                res.status(err.code);
+                res.end("error:" + err);
+                return;
+            }
+
+            let loginData = {
+                userId: result.userId,
+                loginDateTime : new Date()
+            }
+
+            //we are adding a login attempt
+            login.add(databaseData, loginData, function (err, finalResult){
+                
+                res.setHeader('content-type', 'application/json')
+                res.setHeader('accepts', 'POST')
+                //when adding a user is done, this code will run
+                //if we got an error informs the client and set the proper response code
+                if(err){
+                    console.log(err)
+                    res.status(err.code);
+                    res.end("error:" + err);
+                    return;
+                }
+                //if no error let's set proper response code 
+                res.status(201);
+                res.end(JSON.stringify(loginData));
+            });
+        });
+    });
     //------------blogs Routes-----------------
     server.post('/api/v1.0/blogs', (req, res) => {
         
